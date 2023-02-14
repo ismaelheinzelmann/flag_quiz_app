@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/quizzapp_bg"
-    tools:context=".MainActivity"
+    android:background="@drawable/quizapp_bg"
+    tools:context="ismael.example.quizapp.MainActivity"
     android:orientation="vertical"
     android:gravity="center">
     <TextView
@@ -86,7 +86,4 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-
-
-
 </LinearLayout>

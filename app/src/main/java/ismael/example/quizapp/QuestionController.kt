@@ -1,14 +1,19 @@
 package ismael.example.quizapp
 
+
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 import kotlin.collections.ArrayList
 
-class QuestionController {
-    var question: Question? = null
+
+class QuestionController(private val ctx: AppCompatActivity) {
+    private var questions = mutableListOf<Question>()
     var countriesList = mutableListOf<String>()
 
     init {
         countriesList = getCountries()
+        this.newQuestions(10)
     }
 
     private fun getCountries(): ArrayList<String> {
@@ -24,25 +29,36 @@ class QuestionController {
         return countries
     }
 
-    fun newQuestion() {
+    fun getQuestion(n: Int): Question {
+        return questions[n]
+    }
 
-        //
-        var countriesNames = mutableListOf<String>()
-        countriesList.shuffle()
-        countriesNames.add(countriesList[0])
-        countriesList.removeFirst()
-
-        repeat(3) {
-            countriesNames.add(countriesList[0])
+    private fun getCountryCode(countryName: String): String {
+        val locales: Array<out Locale> = Locale.getAvailableLocales()
+        for (locale in locales) {
+            if (countryName == locale.displayCountry) {
+                return locale.country
+            }
         }
-        this.question =
-            Question(countriesNames[0], countriesNames[1], countriesNames[2], countriesNames[3])
-        TODO(
-            "Implement the options activy which will have the flag and four options.+" +
-                    "Implement the logic to get the flag from the country name. from the api (link below).+" +
-                    "https://countryflagsapi.com/#flagSelection+" +
-                    "https://www.geeksforgeeks.org/how-to-load-svg-from-url-in-android-imageview-with-kotlin/+" +
-                    "https://countryflagsapi.com/svg/${this.question!!.correct.lowercase()}"
-        )
+        return ""
+    }
+
+    private fun newQuestions(n: Int) {
+        countriesList.shuffle()
+
+        val answerList: List<String> = countriesList.subList(0, n)
+        countriesList = countriesList.subList(n, countriesList.size)
+
+        for (answer in answerList) {
+            getCountryCode(answer)
+            Log.d("COUNTRYCODE", "${getCountryCode(answer).lowercase()}.png")
+            val resourceId: Int = ctx.resources.getIdentifier(
+                "${getCountryCode(answer).lowercase()}",
+                "drawable", ctx.packageName
+            )
+            Log.d("RESOURCEID", resourceId.toString())
+            questions.add(Question(answer, resourceId))
+
+        }
     }
 }
